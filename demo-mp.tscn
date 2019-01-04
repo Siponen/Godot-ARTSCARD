@@ -1,18 +1,23 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://demo-mp.gd" type="Script" id=1]
 [ext_resource path="res://source/BattleMaster/BattleMaster.gd" type="Script" id=2]
 [ext_resource path="res://source/CardPlayer/CardPlayer.gd" type="Script" id=3]
-[ext_resource path="res://assets/fonts/monogram_extended.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://assets/fonts/title-font.tres" type="DynamicFont" id=5]
-[ext_resource path="res://source/Network/Network.gd" type="Script" id=6]
+[ext_resource path="res://source/PlayerNexus/PlayerNexus.tscn" type="PackedScene" id=4]
+[ext_resource path="res://source/PlayerNexus/PlayerNexus.gd" type="Script" id=5]
+[ext_resource path="res://source/BoardNode/BoardNode.tscn" type="PackedScene" id=6]
+[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.tscn" type="PackedScene" id=7]
+[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.gd" type="Script" id=8]
+[ext_resource path="res://assets/fonts/monogram_extended.ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://assets/fonts/title-font.tres" type="DynamicFont" id=10]
+[ext_resource path="res://source/Network/Network.gd" type="Script" id=11]
 
 [sub_resource type="DynamicFont" id=1]
 
 size = 75
 use_mipmaps = false
 use_filter = false
-font_data = ExtResource( 4 )
+font_data = ExtResource( 9 )
 _sections_unfolded = [ "Font", "Settings" ]
 
 [sub_resource type="Animation" id=2]
@@ -97,7 +102,99 @@ script = ExtResource( 3 )
 
 [node name="PlayerTwo" type="Spatial" parent="BattleMaster" index="1"]
 
-[node name="RequestDuel" type="Control" parent="BattleMaster" index="2"]
+[node name="Board" type="Spatial" parent="BattleMaster" index="2"]
+
+[node name="LeftNexus" parent="BattleMaster/Board" index="0" instance=ExtResource( 4 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6754, 1, 0 )
+script = ExtResource( 5 )
+AdjacentNodes = [ NodePath("../PlainsOfShindor"), NodePath("../ForestOfTelzur") ]
+
+[node name="PlainsOfShindor" parent="BattleMaster/Board" index="1" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.013, 1, -3 )
+AdjacentNodes = [ NodePath("../LeftNexus"), NodePath("../ForestOfTelzur"), NodePath("../HillsOfGrimock"), NodePath("../MountainsOfPower") ]
+
+[node name="ForestOfTelzur" parent="BattleMaster/Board" index="2" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.013, 1, 3 )
+AdjacentNodes = [ NodePath("../LeftNexus"), NodePath(""), NodePath(""), NodePath("") ]
+
+[node name="RuinsOfAvalon" parent="BattleMaster/Board" index="3" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.9492, 1, 6 )
+AdjacentNodes = null
+
+[node name="HillsOfGrimock" parent="BattleMaster/Board" index="4" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.9492, 1, 0 )
+AdjacentNodes = null
+
+[node name="MountainsOfPower" parent="BattleMaster/Board" index="5" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01805, 1, -5.9697 )
+script = ExtResource( 8 )
+AdjacentNodes = null
+
+[node name="CrystalMountain" parent="BattleMaster/Board" index="6" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, -11.1077 )
+AdjacentNodes = null
+
+[node name="PlainsOfAshlands" parent="BattleMaster/Board" index="7" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, -6.1077 )
+AdjacentNodes = null
+
+[node name="AncientPower" parent="BattleMaster/Board" index="8" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.983651, 1, -0.0734625 )
+script = ExtResource( 8 )
+AdjacentNodes = null
+
+[node name="LakeOfLunaleth" parent="BattleMaster/Board" index="9" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, 6 )
+AdjacentNodes = null
+
+[node name="SwampOfDredmor" parent="BattleMaster/Board" index="10" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, 11.8923 )
+AdjacentNodes = null
+
+[node name="DesertOfAzbien" parent="BattleMaster/Board" index="11" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0508, 1, -6 )
+AdjacentNodes = null
+
+[node name="FarmsOfLorran" parent="BattleMaster/Board" index="12" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0508, 1, 0 )
+AdjacentNodes = null
+
+[node name="RuinsOfKrondor" parent="BattleMaster/Board" index="13" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.98365, 1, 5.92654 )
+script = ExtResource( 8 )
+AdjacentNodes = null
+
+[node name="OceansOfGemlith" parent="BattleMaster/Board" index="14" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0508, 1, -2.9826 )
+AdjacentNodes = null
+
+[node name="PlainsOfVinland" parent="BattleMaster/Board" index="15" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0508, 1, 3 )
+AdjacentNodes = null
+
+[node name="RightNexus" parent="BattleMaster/Board" index="16" instance=ExtResource( 4 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.2222, 1, 0 )
+script = ExtResource( 5 )
+AdjacentNodes = null
+
+[node name="RequestDuel" type="Control" parent="BattleMaster" index="3"]
 
 editor/display_folded = true
 anchor_left = 0.0
@@ -152,7 +249,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 10 )
 text = "LETS DUEL"
 percent_visible = 1.0
 lines_skipped = 0
@@ -230,7 +327,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin" ]
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="BattleMaster" index="3"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="BattleMaster" index="4"]
 
 root_node = NodePath("..")
 autoplay = ""
@@ -241,8 +338,6 @@ anims/RequestDuel = SubResource( 2 )
 blend_times = [  ]
 
 [node name="World" type="Spatial" parent="." index="1"]
-
-editor/display_folded = true
 
 [node name="MeshInstance" type="MeshInstance" parent="World" index="0"]
 
@@ -262,7 +357,7 @@ material/0 = null
 
 [node name="Network" type="Node" parent="." index="2"]
 
-script = ExtResource( 6 )
+script = ExtResource( 11 )
 
 [node name="Players" type="Node" parent="." index="3"]
 
