@@ -1,23 +1,24 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://demo-mp.gd" type="Script" id=1]
-[ext_resource path="res://source/BattleMaster/BattleMaster.gd" type="Script" id=2]
-[ext_resource path="res://source/CardPlayer/CardPlayer.gd" type="Script" id=3]
-[ext_resource path="res://source/PlayerNexus/PlayerNexus.tscn" type="PackedScene" id=4]
-[ext_resource path="res://source/PlayerNexus/PlayerNexus.gd" type="Script" id=5]
-[ext_resource path="res://source/BoardNode/BoardNode.tscn" type="PackedScene" id=6]
-[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.tscn" type="PackedScene" id=7]
-[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.gd" type="Script" id=8]
-[ext_resource path="res://assets/fonts/monogram_extended.ttf" type="DynamicFontData" id=9]
-[ext_resource path="res://assets/fonts/title-font.tres" type="DynamicFont" id=10]
-[ext_resource path="res://source/Network/Network.gd" type="Script" id=11]
+[ext_resource path="res://source/Network/Network.gd" type="Script" id=2]
+[ext_resource path="res://source/BattleMaster/BattleMaster.gd" type="Script" id=3]
+[ext_resource path="res://source/CardPlayer/CardPlayer.tscn" type="PackedScene" id=4]
+[ext_resource path="res://source/PlayerNexus/PlayerNexus.tscn" type="PackedScene" id=5]
+[ext_resource path="res://source/PlayerNexus/PlayerNexus.gd" type="Script" id=6]
+[ext_resource path="res://source/BoardNode/BoardNode.tscn" type="PackedScene" id=7]
+[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.tscn" type="PackedScene" id=8]
+[ext_resource path="res://source/PlacesOfPower/PlaceOfPower.gd" type="Script" id=9]
+[ext_resource path="res://assets/fonts/monogram_extended.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://assets/fonts/title-font.tres" type="DynamicFont" id=11]
+[ext_resource path="res://InteractionObject.gd" type="Script" id=12]
 
 [sub_resource type="DynamicFont" id=1]
 
 size = 75
 use_mipmaps = false
 use_filter = false
-font_data = ExtResource( 9 )
+font_data = ExtResource( 10 )
 _sections_unfolded = [ "Font", "Settings" ]
 
 [sub_resource type="Animation" id=2]
@@ -88,113 +89,131 @@ subdivide_width = 0
 subdivide_height = 0
 subdivide_depth = 0
 
+[sub_resource type="CubeMesh" id=5]
+
+custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
+size = Vector3( 2, 2, 2 )
+subdivide_width = 0
+subdivide_height = 0
+subdivide_depth = 0
+
+[sub_resource type="BoxShape" id=6]
+
+extents = Vector3( 1, 1, 1 )
+
 [node name="Root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
-[node name="BattleMaster" type="Spatial" parent="." index="0"]
+[node name="Network" type="Node" parent="." index="0"]
 
 script = ExtResource( 2 )
 
-[node name="PlayerOne" type="Spatial" parent="BattleMaster" index="0"]
+[node name="Game" type="Node" parent="." index="1"]
+
+[node name="BattleMaster" type="Spatial" parent="Game" index="0"]
 
 script = ExtResource( 3 )
 
-[node name="PlayerTwo" type="Spatial" parent="BattleMaster" index="1"]
+[node name="CardPlayerOne" parent="Game/BattleMaster" index="0" instance=ExtResource( 4 )]
 
-[node name="Board" type="Spatial" parent="BattleMaster" index="2"]
+[node name="CardPlayerOne2" parent="Game/BattleMaster" index="1" instance=ExtResource( 4 )]
 
-[node name="LeftNexus" parent="BattleMaster/Board" index="0" instance=ExtResource( 4 )]
+[node name="Board" type="Spatial" parent="Game/BattleMaster" index="2"]
+
+editor/display_folded = true
+
+[node name="LeftNexus" parent="Game/BattleMaster/Board" index="0" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6754, 1, 0 )
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 AdjacentNodes = [ NodePath("../PlainsOfShindor"), NodePath("../ForestOfTelzur") ]
 
-[node name="PlainsOfShindor" parent="BattleMaster/Board" index="1" instance=ExtResource( 6 )]
+[node name="PlainsOfShindor" parent="Game/BattleMaster/Board" index="1" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.013, 1, -3 )
 AdjacentNodes = [ NodePath("../LeftNexus"), NodePath("../ForestOfTelzur"), NodePath("../HillsOfGrimock"), NodePath("../MountainsOfPower") ]
 
-[node name="ForestOfTelzur" parent="BattleMaster/Board" index="2" instance=ExtResource( 6 )]
+[node name="ForestOfTelzur" parent="Game/BattleMaster/Board" index="2" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.013, 1, 3 )
 AdjacentNodes = [ NodePath("../LeftNexus"), NodePath(""), NodePath(""), NodePath("") ]
 
-[node name="RuinsOfAvalon" parent="BattleMaster/Board" index="3" instance=ExtResource( 6 )]
+[node name="RuinsOfAvalon" parent="Game/BattleMaster/Board" index="3" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.9492, 1, 6 )
 AdjacentNodes = null
 
-[node name="HillsOfGrimock" parent="BattleMaster/Board" index="4" instance=ExtResource( 6 )]
+[node name="HillsOfGrimock" parent="Game/BattleMaster/Board" index="4" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.9492, 1, 0 )
 AdjacentNodes = null
 
-[node name="MountainsOfPower" parent="BattleMaster/Board" index="5" instance=ExtResource( 7 )]
+[node name="MountainsOfPower" parent="Game/BattleMaster/Board" index="5" instance=ExtResource( 8 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01805, 1, -5.9697 )
-script = ExtResource( 8 )
+script = ExtResource( 9 )
 AdjacentNodes = null
 
-[node name="CrystalMountain" parent="BattleMaster/Board" index="6" instance=ExtResource( 6 )]
+[node name="CrystalMountain" parent="Game/BattleMaster/Board" index="6" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, -11.1077 )
 AdjacentNodes = null
 
-[node name="PlainsOfAshlands" parent="BattleMaster/Board" index="7" instance=ExtResource( 6 )]
+[node name="PlainsOfAshlands" parent="Game/BattleMaster/Board" index="7" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, -6.1077 )
 AdjacentNodes = null
 
-[node name="AncientPower" parent="BattleMaster/Board" index="8" instance=ExtResource( 7 )]
+[node name="AncientPower" parent="Game/BattleMaster/Board" index="8" instance=ExtResource( 8 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.983651, 1, -0.0734625 )
-script = ExtResource( 8 )
+script = ExtResource( 9 )
 AdjacentNodes = null
 
-[node name="LakeOfLunaleth" parent="BattleMaster/Board" index="9" instance=ExtResource( 6 )]
+[node name="LakeOfLunaleth" parent="Game/BattleMaster/Board" index="9" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, 6 )
 AdjacentNodes = null
 
-[node name="SwampOfDredmor" parent="BattleMaster/Board" index="10" instance=ExtResource( 6 )]
+[node name="SwampOfDredmor" parent="Game/BattleMaster/Board" index="10" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0508, 1, 11.8923 )
 AdjacentNodes = null
 
-[node name="DesertOfAzbien" parent="BattleMaster/Board" index="11" instance=ExtResource( 6 )]
+[node name="DesertOfAzbien" parent="Game/BattleMaster/Board" index="11" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0508, 1, -6 )
 AdjacentNodes = null
 
-[node name="FarmsOfLorran" parent="BattleMaster/Board" index="12" instance=ExtResource( 6 )]
+[node name="FarmsOfLorran" parent="Game/BattleMaster/Board" index="12" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0508, 1, 0 )
 AdjacentNodes = null
 
-[node name="RuinsOfKrondor" parent="BattleMaster/Board" index="13" instance=ExtResource( 7 )]
+[node name="RuinsOfKrondor" parent="Game/BattleMaster/Board" index="13" instance=ExtResource( 8 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.98365, 1, 5.92654 )
-script = ExtResource( 8 )
+script = ExtResource( 9 )
 AdjacentNodes = null
 
-[node name="OceansOfGemlith" parent="BattleMaster/Board" index="14" instance=ExtResource( 6 )]
+[node name="OceansOfGemlith" parent="Game/BattleMaster/Board" index="14" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0508, 1, -2.9826 )
 AdjacentNodes = null
 
-[node name="PlainsOfVinland" parent="BattleMaster/Board" index="15" instance=ExtResource( 6 )]
+[node name="PlainsOfVinland" parent="Game/BattleMaster/Board" index="15" instance=ExtResource( 7 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0508, 1, 3 )
 AdjacentNodes = null
 
-[node name="RightNexus" parent="BattleMaster/Board" index="16" instance=ExtResource( 4 )]
+[node name="RightNexus" parent="Game/BattleMaster/Board" index="16" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.2222, 1, 0 )
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 AdjacentNodes = null
 
-[node name="RequestDuel" type="Control" parent="BattleMaster" index="3"]
+[node name="RequestDuel" type="Control" parent="Game/BattleMaster" index="3"]
 
 editor/display_folded = true
 anchor_left = 0.0
@@ -208,7 +227,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="ChallengerName" type="Label" parent="BattleMaster/RequestDuel" index="0"]
+[node name="ChallengerName" type="Label" parent="Game/BattleMaster/RequestDuel" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -233,7 +252,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "custom_colors" ]
 
-[node name="LetsDuel" type="Label" parent="BattleMaster/RequestDuel" index="1"]
+[node name="LetsDuel" type="Label" parent="Game/BattleMaster/RequestDuel" index="1"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -249,14 +268,14 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 10 )
+custom_fonts/font = ExtResource( 11 )
 text = "LETS DUEL"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "custom_fonts" ]
 
-[node name="ColorRect" type="ColorRect" parent="BattleMaster/RequestDuel" index="2"]
+[node name="ColorRect" type="ColorRect" parent="Game/BattleMaster/RequestDuel" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -275,7 +294,7 @@ size_flags_vertical = 1
 color = Color( 1, 1, 1, 1 )
 _sections_unfolded = [ "Margin" ]
 
-[node name="YesButton" type="Button" parent="BattleMaster/RequestDuel" index="3"]
+[node name="YesButton" type="Button" parent="Game/BattleMaster/RequestDuel" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -296,12 +315,12 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "YES"
+text = "Accept"
 flat = false
 align = 1
 _sections_unfolded = [ "Margin", "custom_styles" ]
 
-[node name="DeclineButton" type="Button" parent="BattleMaster/RequestDuel" index="4"]
+[node name="DeclineButton" type="Button" parent="Game/BattleMaster/RequestDuel" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -322,12 +341,12 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "NO"
+text = "Decline"
 flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin" ]
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="BattleMaster" index="4"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Game/BattleMaster" index="4"]
 
 root_node = NodePath("..")
 autoplay = ""
@@ -337,11 +356,11 @@ playback_speed = 1.0
 anims/RequestDuel = SubResource( 2 )
 blend_times = [  ]
 
-[node name="World" type="Spatial" parent="." index="1"]
+[node name="World" type="Spatial" parent="Game" index="1"]
 
-[node name="MeshInstance" type="MeshInstance" parent="World" index="0"]
+[node name="MeshInstance" type="MeshInstance" parent="Game/World" index="0"]
 
-transform = Transform( 4.4, 0, 0, 0, 0.258013, 0, 0, 0, 4.4, 0, -0.393788, 0 )
+transform = Transform( 24.2531, 0, 0, 0, 0.264593, 0, 0, 0, 24.2531, 0, -5.67437, 0 )
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -355,26 +374,76 @@ mesh = SubResource( 4 )
 skeleton = NodePath("..")
 material/0 = null
 
-[node name="Network" type="Node" parent="." index="2"]
+[node name="InteractionObject" type="StaticBody" parent="Game/World" index="1"]
 
-script = ExtResource( 11 )
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 17 )
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 1
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+script = ExtResource( 12 )
 
-[node name="Players" type="Node" parent="." index="3"]
+[node name="MeshInstance" type="MeshInstance" parent="Game/World/InteractionObject" index="0"]
 
-[node name="Camera" type="Camera" parent="." index="4"]
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 5 )
+skeleton = NodePath("..")
+material/0 = null
 
-transform = Transform( 1, 0, 0, 0, 0.647359, 0.762185, 0, -0.762185, 0.647359, 0, 3.15827, 3.43512 )
-keep_aspect = 1
-cull_mask = 1048575
-environment = null
-h_offset = 0.0
-v_offset = 0.0
-doppler_tracking = 0
-projection = 0
-current = false
-fov = 70.0
-size = 1.0
-near = 0.05
-far = 100.0
+[node name="CollisionShape" type="CollisionShape" parent="Game/World/InteractionObject" index="1"]
+
+shape = SubResource( 6 )
+disabled = false
+
+[node name="InteractionObject2" type="StaticBody" parent="Game/World" index="2"]
+
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 17 )
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 1
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+script = ExtResource( 12 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Game/World/InteractionObject2" index="0"]
+
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 5 )
+skeleton = NodePath("..")
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="Game/World/InteractionObject2" index="1"]
+
+shape = SubResource( 6 )
+disabled = false
+
+[node name="Players" type="Node" parent="." index="2"]
+
+[node name="Battles" type="Node" parent="." index="3"]
 
 

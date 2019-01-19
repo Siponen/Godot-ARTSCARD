@@ -9,6 +9,9 @@ func _init(_tree, _network):
 	network = root.get_node("Network")
 	pass
 
+func networkId():
+	Console.addLog("Your network id is: " + str(network.networkId))
+
 func say(message):
 	if tree.is_network_server():
 		network.hostSay(message)

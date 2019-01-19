@@ -15,10 +15,10 @@ var turn = 1
 
 var phase = 1
 
-
 func _ready():
 	playerOne = $PlayerOne
 	playerTwo = $PlayerTwo
+	$RequestDuel.hide()
 	pass
 
 func _process(delta):

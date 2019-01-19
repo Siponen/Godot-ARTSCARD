@@ -5,9 +5,11 @@ const SERVER_IP = "127.0.0.1"
 const SERVER_PORT = 8080
 const MAX_PLAYERS = 10
 const HOST_ID = 1
+var networkId
 var tree
 var root
 var peer
+var playersNode
 
 #Player data
 var onConnectPlayerData #Init player info
@@ -20,6 +22,8 @@ var Player = preload("res://source/Player/Player.tscn")
 func _ready():
 	tree = get_tree()
 	root = tree.get_root().get_node("Root")
+	playersNode = root.get_node("Players")
+	
 	tree.connect("network_peer_connected", self, "onPlayerConnected")
 	tree.connect("network_peer_disconnected", self, "onPlayerDisconnected")
 	tree.connect("connected_to_server", self, "onConnectedOk")
@@ -30,7 +34,9 @@ func _ready():
 	onConnectPlayerData = {"name": "Player", "position": Vector3()}
 	
 	initNetwork()
-	addPlayerToScene(HOST_ID, hostPlayerData)
+	if is_network_master():
+		addPlayerToScene(HOST_ID, hostPlayerData)
+		setHostPlayerCamera()
 	pass
 
 func initNetwork():
@@ -68,8 +74,8 @@ func getPlayers():
 #Network events
 func onConnectedOk():
 	Console.addLog("Server connected on " + SERVER_IP + ":" + str(SERVER_PORT))
-	var id = get_tree().get_network_unique_id()
-	rpc("registerPlayer", id , onConnectPlayerData)
+	networkId = get_tree().get_network_unique_id()
+	rpc_id(HOST_ID, "registerPlayer", networkId , onConnectPlayerData)
 	pass
 
 func onPlayerConnected(id):
@@ -89,25 +95,37 @@ func onServerDisconnected():
 func onConnectedFail():
 	Console.addLog("Failed to connect to server " + SERVER_IP + ":" + str(SERVER_PORT))
 
-
-remote func registerPlayer(id, playerData):
+master func registerPlayer(id, onConnectPlayerData):
 	if tree.is_network_server():
 		randomize() #Generate spawnpoint
 		var spawnPosition = Vector3(randf()*2.0,0,randf()*2.0)
-		playerData.position = spawnPosition
+		onConnectPlayerData.position = spawnPosition
+		
 		#Register player to all other players
 		for playerId in playerDataMap:
-			rpc_id(playerId, "addPlayer", id, playerData)
+			rpc_id(playerId, "addPlayer", id, onConnectPlayerData)
+		
 		#Add the player to the server
-		addPlayer(id, playerData)
+		addPlayer(id, onConnectPlayerData)
+		
 		#Send all players to the new player
 		for playerId in playerDataMap:
-			rpc_id(id, "addPlayer", playerId, playerDataMap[playerId])
+			var player = playersNode.get_node(str(playerId))
+			var sendPlayerData = playerDataMap[playerId]
+			sendPlayerData.position = player.global_transform.origin
+			rpc_id(id, "addPlayer", playerId, sendPlayerData)
+		
+		#And the server player
+		var serverPlayer = playersNode.get_node(str(HOST_ID))
+		hostPlayerData.position = serverPlayer.global_transform.origin
+		rpc_id(id, "addPlayer", HOST_ID, hostPlayerData)
 	pass
 
 remote func addPlayer(id, playerData):
 	playerDataMap[id] = playerData
 	addPlayerToScene(id, playerData)
+	if networkId == id:
+		setPlayerCamera(networkId)
 
 func addPlayerToScene(id, playerData):
 	var player = preload("res://source/Player/Player.tscn").instance()
@@ -116,6 +134,15 @@ func addPlayerToScene(id, playerData):
 	player.set_network_master(id)
 	player.global_transform.origin = playerData.position
 
+func setHostPlayerCamera():
+	var player = root.get_node("Players").get_node(str(HOST_ID))
+	player.get_node("Camera").make_current()
+	pass
+
+func setPlayerCamera(playerId):
+	var player = root.get_node("Players").get_node(str(playerId))
+	player.get_node("Camera").make_current()
+	pass
 
 func hostChangeName(_name):
 	if tree.is_network_server():
@@ -209,3 +236,4 @@ remote func clientSay(id, msg):
 
 remote func requestMove(velocity):
 	pass
+	

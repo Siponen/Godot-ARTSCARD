@@ -78,4 +78,4 @@ func parseCommand(command):
 	else:
 		match(slices[0]):
 			"players": commands.players()
-		
+			"networkId" : commands.networkId()
